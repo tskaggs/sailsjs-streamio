@@ -10,8 +10,10 @@ var client = stream.connect('', '', '');
 module.exports = {
 
 	useraction: function(req, res) {
-		var user = client.feed('user', '', '');
-		var activity = {actor: 'eric', tweet: 'This is a tweet!', verb: 'tweet', object: 1};
+
+		var params = req.params.all();
+		var user = client.feed('user', 'eric', '');
+		var activity = {actor: 'eric', tweet: params.text, verb: 'tweet', object: 1};
 
 		user.addActivity(activity)
     		.then(function(data) { 
@@ -20,9 +22,23 @@ module.exports = {
     		})
     		.catch(function(reason) { 
     			console.log('failure', reason);
-    			res.json(reason);
+    			res.json(data);
     		});
 
 	},
+
+	userget: function(req, res) {
+		var user = client.feed('user', 'eric', '');
+
+		user.get({ limit:5})
+		  .then(function(data) { 
+    			console.log('success', data);
+    			res.json(data);
+    		})
+		  .catch(function(reason) { 
+    			console.log('failure', reason);
+    			res.json(data);
+    		});
+	}
 };
 
